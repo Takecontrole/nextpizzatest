@@ -1,110 +1,124 @@
 import styles from "../../styles/Product.module.css";
-import stylesC from "../../styles/PizzaCard.module.css";
 import Image from "next/image";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addProduct } from "../../redux/cartSlice";
 
 
-const Product = () => {
+export const getStaticPaths = async () => {
+  const res = await fetch('https://api-pizza.adaptable.app/products');
+  const data = await res.json();
+
+  // map data to an array of path objects with params (id)
+  const paths = data.map(pizza => {
+    return {
+      params: { id: pizza._id.toString() }
+    }
+  })
+
+  return {
+    paths,
+    fallback: false
+  }
+}
+export const getStaticProps = async (context) => {
+  const id = context.params.id;
+  const res = await fetch(`https://api-pizza.adaptable.app/products/${id}`);
+  const data = await res.json();
+
+  return {
+    props: { pizza: data }
+  }
+}
+
+
+const Product = ({ pizza }) => {
+  const [price, setPrice] = useState(pizza.product.prices[0]);
+  const [size, setSize] = useState(0);
+  const [extras, setExtras] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
+  
+  const changePrice = (number) => {
+    setPrice(price + number);
+  };
+  
+  const handleSize = (sizeIndex) => {
+    const difference = pizza.product.prices[sizeIndex] - pizza.product.prices[size];
+    setSize(sizeIndex);
+    changePrice(difference);
+  };
+  
+  const handleChange = (e, option) => {
+    const checked = e.target.checked;
+
+    if (checked) {
+      changePrice(option.price);
+      setExtras((prev) => [...prev, option]);
+    } else {
+      changePrice(-option.price);
+      setExtras(extras.filter((extra) => extra._id !== option._id));
+    }
+  };
+  const handleClick = () => {
+    dispatch(addProduct({...pizza, extras, price, quantity}));
+  };
   return (
-       
-       <div className={styles.container}>
+    <div className={styles.container}>
       <div className={styles.left}>
-         <div className={stylesC.container}>
-             
-      <img src="https://dodopizza-a.akamaihd.net/static/Img/Products/5907951b8bf848b2b3bf0ead39b84ab1_760x760.webp" alt="" width="500" height="500" />
-      
-
-    </div>
+        <div className={styles.imgContainer}>
+          <Image src={pizza.product.img} objectFit="contain" layout="fill" alt="" />
+        </div>
       </div>
       <div className={styles.right}>
-        <h1 className={styles.title}>Аррива!</h1>
-        <span className={styles.price}>₽490</span>
-        <p className={styles.desc}>Цыпленок, острая чоризо, соус бургер, сладкий перец, красный лук, томаты, моцарелла, соус ранч, чеснок</p>
+        <h1 className={styles.title}>{pizza.product.title}</h1>
+        <span className={styles.price}>{price}</span>
+        <p className={styles.desc}>{pizza.product.desc}</p>
         <h3 className={styles.choose}>Выбери размер</h3>
         <div className={styles.sizes}>
-          <div className={styles.size}>
-            <img src="https://thumbs.dreamstime.com/b/pizza-vector-icon-italian-fast-food-cafe-logo-illustration-pizzeria-icon-pizza-vector-icon-italian-fast-food-cafe-logo-150445333.jpg" width="40" height="40"  alt="" />
+          <div className={styles.size} onClick={() => handleSize(0)}>
+            <Image src="/img/size.png" layout="fill" alt="" />
             <span className={styles.number}>Маленькая</span>
           </div>
-          <div className={styles.size}> 
-            <img src="https://thumbs.dreamstime.com/b/pizza-vector-icon-italian-fast-food-cafe-logo-illustration-pizzeria-icon-pizza-vector-icon-italian-fast-food-cafe-logo-150445333.jpg" width="50" height="50" alt="" />
+          <div className={styles.size} onClick={() => handleSize(1)}>
+            <Image src="/img/size.png" layout="fill" alt="" />
             <span className={styles.number}>Средняя</span>
           </div>
-          <div className={styles.size}>
-            <img src="https://thumbs.dreamstime.com/b/pizza-vector-icon-italian-fast-food-cafe-logo-illustration-pizzeria-icon-pizza-vector-icon-italian-fast-food-cafe-logo-150445333.jpg" width="56" height="60"  alt="" />
+          <div className={styles.size} onClick={() => handleSize(2)}>
+            <Image src="/img/size.png" layout="fill" alt="" />
             <span className={styles.number}>Гигантская</span>
           </div>
         </div>
         <h3 className={styles.choose}>Выбери доролнительные ингредиенты</h3>
         <div className={styles.ingredients}>
- 
-            <div className={styles.option} key="1">
+        {pizza.product.extraOptions.map((option) => (
+            <div className={styles.option} key={option._id}>
               <input
                 type="checkbox"
-                id="1"
-                name="чесночный соус"
+                id={option.text}
+                name={option.text}
                 className={styles.checkbox}
-               
+               onChange={(e) => handleChange(e, option)}
               />
-              <label htmlFor="double">Чесночный соус</label>
+              <label htmlFor="double">{option.text}</label>
             </div>
-          
-            <div className={styles.option} key="2">
-              <input
-                type="checkbox"
-                id="2"
-                name="Острый перец"
-                className={styles.checkbox}
-               
-              />
-              <label htmlFor="double">Острый перец</label>
-            </div>
-          
-            <div className={styles.option} key="3">
-              <input
-                type="checkbox"
-                id="3"
-                name="Моцарелла"
-                className={styles.checkbox}
-               
-              />
-              <label htmlFor="double">Моцарелла</label>
-            </div>
-          
-            <div className={styles.option} key="4">
-              <input
-                type="checkbox"
-                id="4"
-                name="Сырный бортик"
-                className={styles.checkbox}
-               
-              />
-              <label htmlFor="double">Сырный бортик</label>
-            </div>
-            <div className={styles.option} key="5">
-              <input
-                type="checkbox"
-                id="5"
-                name="Томаты"
-                className={styles.checkbox}
-               
-              />
-              <label htmlFor="double">Томаты</label>
-            </div>
-          
+          ))}
         
         </div>
         <div className={styles.add}>
             <input
-            
+            onChange={(e) => setQuantity(e.target.value)}
             type="number"
             defaultValue={1}
             className={styles.quantity}
           />
-            <button className={styles.button} >Добавить в корзину</button>
+            <button className={styles.button} onClick={handleClick}>Добавить в корзину</button>
         </div>
       </div>
     </div>
   );
 };
 
+
 export default Product;
+
