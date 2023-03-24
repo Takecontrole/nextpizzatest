@@ -16,6 +16,7 @@ src: url(./Playfair_Display/static/PlayfairDisplay-MediumItalic.ttf);
 }
 
 .title {
+  height: 50px;
   font-family: Imported;
   font-size: 26px;
   font-weight: bold;
@@ -34,11 +35,14 @@ src: url(./Playfair_Display/static/PlayfairDisplay-MediumItalic.ttf);
   text-align: center;
   color: #777;
   font-size: 22px;
+  height: 380px;
+  
 }
 
 @media screen and (max-width: 480px) {
   .container {
     width: 100%;
+    margin-left: 20px;
   }
 
   .title {
@@ -50,5 +54,8 @@ src: url(./Playfair_Display/static/PlayfairDisplay-MediumItalic.ttf);
     margin-right: 30px;
     margin-left: 30px;
     font-size: 18px;
+  }
+  .desc{
+    height: 200px;
   }
 }

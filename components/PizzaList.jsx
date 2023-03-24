@@ -12,6 +12,9 @@ const PizzaList = ({pizzaList}) => {
           {pizzaList.map((pizza) => (
           <PizzaCard key={pizza._id} pizza={pizza} />
         ))}
+          {pizzaList.map((pizza) => (
+          <PizzaCard key={pizza._id} pizza={pizza} />
+        ))}
       </div>
     </div>
   );
