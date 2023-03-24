@@ -77,15 +77,15 @@ const Product = ({ pizza }) => {
         <h3 className={styles.choose}>Выбери размер</h3>
         <div className={styles.sizes}>
           <div className={styles.size} onClick={() => handleSize(0)}>
-            <Image src="/img/size.png" layout="fill" alt="" />
+            <img src="/img/size.png" layout="fill" alt="" />
             <span className={styles.number}>Маленькая</span>
           </div>
           <div className={styles.size} onClick={() => handleSize(1)}>
-            <Image src="/img/size.png" layout="fill" alt="" />
+            <img src="/img/size.png" layout="fill" alt="" />
             <span className={styles.number}>Средняя</span>
           </div>
           <div className={styles.size} onClick={() => handleSize(2)}>
-            <Image src="/img/size.png" layout="fill" alt="" />
+            <img src="/size.png" layout="fill" alt="" />
             <span className={styles.number}>Гигантская</span>
           </div>
         </div>
